@@ -1,10 +1,8 @@
-import pandas as pd  # manipulacao de dados
-import streamlit as st  # criar dashboard
-import plotly.express as px  # construir graficos
+import pandas as pd
+import streamlit as st
+import plotly.express as px
 
 
-# ===============================
-# configuracao da pagina
 st.set_page_config(page_title="AIDS no Maranhão ", layout="wide")
 st.markdown("""
     <style>
@@ -17,10 +15,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ===============================
-# SIDEBAR - painel lateral
+
 with st.sidebar:
-    st.image("logo_datasus.png", width=250)   # logo datasus
+    st.image("logo_datasus.png", width=250)
     st.header("UF: Maranhão")
     st.image("https://upload.wikimedia.org/wikipedia/commons/4/45/Bandeira_do_Maranh%C3%A3o.svg",
              width=200)
@@ -45,13 +42,11 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-# ===============================
-# leitura e tratamento dos dados
+
 df = pd.read_csv("dados.csv", sep=",")
-df = df[df["Ano Notificação"] != "TOTAL"]  # removendo linha total
+df = df[df["Ano Notificação"] != "TOTAL"]
 df["Ano Notificação"] = df["Ano Notificação"].astype(int)
 
-# lista de faixas etarias
 faixas = ['< 1 ano', '1-4', '5-9', '10-14', '15-19', '20-29', '30-39',
           '50-59', '60-69', '70-79', '80 e mais']
 
@@ -62,12 +57,10 @@ df_sx_long = pd.melt(df_sx, id_vars=["Sexo"], value_vars=["2018", "2019", "2020"
                      var_name="Ano", value_name="Casos")
 df_sx_long["Ano"] = df_sx_long["Ano"].astype(int)
 
-# ===============================
-# titulo do dashboard
+
 st.markdown("<h1 style='text-align: center; color: #004080;' >Casos de AIDS: De 2018 a 2023</h1>",
             unsafe_allow_html=True)
 
-# texto 1
 st.markdown("<h2 style='text-align: left; color: #004080;' >1. Introdução</h2>",
             unsafe_allow_html=True)
 st.markdown("""
@@ -78,7 +71,6 @@ Este relatório tem como foco os casos notificados de AIDS no estado do Maranhã
 A escolha do Maranhão justifica-se por sua importância estratégica na Região Nordeste, além de ser um estado com desafios históricos em relação à cobertura de saúde e vigilância epidemiológica.
 </p>""", unsafe_allow_html=True)
 
-# texto 2
 st.markdown("<h2 style='text-align: left; color: #004080;' >2. Metodologia</h2>",
             unsafe_allow_html=True)
 st.markdown("""
@@ -92,7 +84,7 @@ Foi realizado um recorte específico para o estado do Maranhão, abrangendo o pe
     </ul>
 </p>""", unsafe_allow_html=True)
 
-# texto 3
+
 st.markdown("<h2 style='text-align: left; color: #004080;' >3. Dashboards apresentados</h2>",
             unsafe_allow_html=True)
 st.markdown("""
@@ -106,15 +98,11 @@ st.markdown("""
 4. Gráfico de linha que permite observar tendências por grupo etário.<br>
 </p>""", unsafe_allow_html=True)
 
-# ===============================
-# colunas de grafico 1 e 2
 col1, col2 = st.columns(2)
-# grafico 1  >>  Evolucao total de casos por ano
 with col1:
     fig1 = px.line(df_sx_long, x="Ano", y="Casos", color="Sexo",
                    title="1.Evolução de Casos de AIDS por Sexo (2018–2023)", markers=True)
     st.plotly_chart(fig1, use_container_width=True)
-# grafico 2  >>  Distribuicao por faixa etaria total (18-23)
 with col2:
     df_total = pd.read_csv("dados.csv")
     casos_por_faixa = df_total[df_total["Ano Notificação"]
@@ -125,17 +113,13 @@ with col2:
                   title="2.Distribuição total por faixa etária (2018-2023)")
     st.plotly_chart(fig2, use_container_width=True)
 
-# ===============================
-# colunas de grafico 3 e 4
 col3, col4 = st.columns(2)
-# grafico 3  >>  Comparacao faixa etaria x ano
 with col3:
     df_long = pd.melt(df, id_vars=["Ano Notificação"], value_vars=faixas,
                       var_name="Faixa Etaria", value_name="Casos")
     fig3 = px.bar(df_long, x="Ano Notificação", y="Casos", color="Faixa Etaria",
                   title="3.Casos por faixa etária ao longo dos anos", barmode="stack")
     st.plotly_chart(fig3, use_container_width=True)
-# grafico 4  >>  faixa etaria predominante por ano
 with col4:
     df_linhas = df[["Ano Notificação"] + faixas]
     df_long_line = pd.melt(df_linhas, id_vars="Ano Notificação", value_vars=faixas,
@@ -149,9 +133,6 @@ with col4:
     st.plotly_chart(fig4, use_container_width=True)
 
 
-# ================================
-# texto de conclusao
-
 st.markdown("<h2 style='text-align: left; color: #004080;' >4. Conclusão</h2>",
             unsafe_allow_html=True)
 st.markdown("""
@@ -163,8 +144,6 @@ O uso do Python e das bibliotecas modernas de visualização foi essencial para 
 </p>""", unsafe_allow_html=True)
 
 
-# ===============================
-# rodape
 st.markdown("---")
 st.caption(
     "Fonte: DATASUS/TabNet • Desenvolvido por Livius, Roberth, Elisei, Gabriel ©")
