@@ -1,9 +1,9 @@
-import pandas as pd           #  manipulacao de dados 
-import streamlit as st        #  criar dashboard 
-import plotly.express as px    #  construir graficos
+import pandas as pd  # manipulacao de dados
+import streamlit as st  # criar dashboard
+import plotly.express as px  # construir graficos
 
 
-#=============================== 
+# ===============================
 # configuracao da pagina
 st.set_page_config(page_title="AIDS no Maranhão ", layout="wide")
 st.markdown("""
@@ -17,7 +17,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-#===============================
+# ===============================
 # SIDEBAR - painel lateral
 with st.sidebar:
     st.image("logo_datasus.png", width=250)   # logo datasus
@@ -45,10 +45,10 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-#===============================
+# ===============================
 # leitura e tratamento dos dados
 df = pd.read_csv("dados.csv", sep=",")
-df = df[df["Ano Notificação"] != "TOTAL"] # removendo linha total
+df = df[df["Ano Notificação"] != "TOTAL"]  # removendo linha total
 df["Ano Notificação"] = df["Ano Notificação"].astype(int)
 
 # lista de faixas etarias
@@ -60,14 +60,16 @@ df_sx = df_sx[df_sx["Sexo"] != "TOTAL"]
 
 df_sx_long = pd.melt(df_sx, id_vars=["Sexo"], value_vars=["2018", "2019", "2020", "2021", "2022", "2023"],
                      var_name="Ano", value_name="Casos")
-df_sx_long["Ano"] = df_sx_long["Ano"].astype(int)            
+df_sx_long["Ano"] = df_sx_long["Ano"].astype(int)
 
-#===============================
+# ===============================
 # titulo do dashboard
-st.markdown("<h1 style='text-align: center; color: #004080;' >Casos de AIDS: De 2018 a 2023</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #004080;' >Casos de AIDS: De 2018 a 2023</h1>",
+            unsafe_allow_html=True)
 
 # texto 1
-st.markdown("<h2 style='text-align: left; color: #004080;' >1. Introdução</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: left; color: #004080;' >1. Introdução</h2>",
+            unsafe_allow_html=True)
 st.markdown("""
 <p style='font-size: 20px;'>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A AIDS (Síndrome da Imunodeficiência Adquirida) continua sendo um dos maiores desafios de saúde pública no Brasil. 
@@ -77,7 +79,8 @@ A escolha do Maranhão justifica-se por sua importância estratégica na Região
 </p>""", unsafe_allow_html=True)
 
 # texto 2
-st.markdown("<h2 style='text-align: left; color: #004080;' >2. Metodologia</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: left; color: #004080;' >2. Metodologia</h2>",
+            unsafe_allow_html=True)
 st.markdown("""
 <p style='font-size: 20px;'>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Os dados utilizados neste dashboard foram coletados na plataforma DATASUS, por meio do sistema TABNET/SINAN, que disponibiliza informações públicas sobre doenças e agravos de notificação em todo o território brasileiro.
@@ -90,7 +93,8 @@ Foi realizado um recorte específico para o estado do Maranhão, abrangendo o pe
 </p>""", unsafe_allow_html=True)
 
 # texto 3
-st.markdown("<h2 style='text-align: left; color: #004080;' >3. Dashboards apresentados</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: left; color: #004080;' >3. Dashboards apresentados</h2>",
+            unsafe_allow_html=True)
 st.markdown("""
 <p style='font-size: 20px;'>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Com base nos dados tratados, foram gerados quatro gráficos, que compõem os dashboards abaixo:
@@ -102,7 +106,7 @@ st.markdown("""
 4. Gráfico de linha que permite observar tendências por grupo etário.<br>
 </p>""", unsafe_allow_html=True)
 
-#===============================
+# ===============================
 # colunas de grafico 1 e 2
 col1, col2 = st.columns(2)
 # grafico 1  >>  Evolucao total de casos por ano
@@ -113,14 +117,15 @@ with col1:
 # grafico 2  >>  Distribuicao por faixa etaria total (18-23)
 with col2:
     df_total = pd.read_csv("dados.csv")
-    casos_por_faixa = df_total[df_total["Ano Notificação"] == "TOTAL"][faixas].T.reset_index()
+    casos_por_faixa = df_total[df_total["Ano Notificação"]
+                               == "TOTAL"][faixas].T.reset_index()
     casos_por_faixa.columns = ["Faixa Etaria", "Casos"]
 
     fig2 = px.bar(casos_por_faixa, x="Casos", y="Faixa Etaria", orientation='h',
-                title="2.Distribuição total por faixa etária (2018-2023)")
+                  title="2.Distribuição total por faixa etária (2018-2023)")
     st.plotly_chart(fig2, use_container_width=True)
 
-#===============================
+# ===============================
 # colunas de grafico 3 e 4
 col3, col4 = st.columns(2)
 # grafico 3  >>  Comparacao faixa etaria x ano
@@ -136,18 +141,19 @@ with col4:
     df_long_line = pd.melt(df_linhas, id_vars="Ano Notificação", value_vars=faixas,
                            var_name="Faixa etaria", value_name="Casos")
 
-    df_long_line["Ano Notificação"] = df_long_line["Ano Notificação"].astype(int)
+    df_long_line["Ano Notificação"] = df_long_line["Ano Notificação"].astype(
+        int)
 
     fig4 = px.line(df_long_line, x="Ano Notificação", y="Casos", color="Faixa etaria",
                    title="4.Evolução por faixa etária", markers=True)
     st.plotly_chart(fig4, use_container_width=True)
 
 
-
-#================================
+# ================================
 # texto de conclusao
 
-st.markdown("<h2 style='text-align: left; color: #004080;' >4. Conclusão</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: left; color: #004080;' >4. Conclusão</h2>",
+            unsafe_allow_html=True)
 st.markdown("""
 <p style='font-size: 20px;'>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A análise dos dados de AIDS no Maranhão entre 2018 e 2023 revelou que os casos concentram-se principalmente nas faixas etárias entre 20 e 39 anos, predominantemente no sexo masculino, o que reforça a importância de campanhas direcionadas ao público jovem e adulto.
@@ -157,8 +163,8 @@ O uso do Python e das bibliotecas modernas de visualização foi essencial para 
 </p>""", unsafe_allow_html=True)
 
 
-
-#===============================
+# ===============================
 # rodape
 st.markdown("---")
-st.caption("Fonte: DATASUS/TabNet • Desenvolvido por Livius, Roberth, Elisei, Gabriel ©")
+st.caption(
+    "Fonte: DATASUS/TabNet • Desenvolvido por Livius, Roberth, Elisei, Gabriel ©")
