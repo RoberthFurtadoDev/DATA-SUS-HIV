@@ -14,7 +14,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
+echo "# DATA-SUS-HIV" >> README.md
 
 with st.sidebar:
     st.image("logo_datasus.png", width=250)
