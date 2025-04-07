@@ -145,4 +145,4 @@ O uso do Python e das bibliotecas modernas de visualização foi essencial para 
 
 st.markdown("---")
 st.caption(
-    "Fonte: DATASUS/TabNet • Desenvolvido por Livius, Roberth, Elisei, Gabriel ©")
+    "Fonte: DATASUS/TabNet • Desenvolvido por Livius, Roberth, Eliseu, Gabriel ©")
